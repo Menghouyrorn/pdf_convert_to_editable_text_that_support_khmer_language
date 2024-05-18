@@ -6,7 +6,7 @@ function Navbar() {
     console.log(window.location.pathname);
   });
   return (
-    <div className="w-full h-[12vh] shadow-sm items-center flex justify-between pl-[15px] pr-[15px]">
+    <div className="lg:w-full md:w-full sm:w-full max-sm:w-full h-[12vh] shadow-sm items-center flex justify-between pl-[15px]">
       <div className="flex gap-x-10">
         <Link to={'/'}>
           <div className="flex items-center gap-x-4 hover:cursor-pointer">

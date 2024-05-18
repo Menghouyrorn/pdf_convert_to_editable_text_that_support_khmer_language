@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph } from "docx";
 import Tesseract from "tesseract.js";
@@ -9,6 +9,8 @@ const ConvertPDFTOWORD = () => {
   const [pdffile, setPdfFile] = React.useState(null);
   const [pdfname, setPdfName] = React.useState("");
   const [text, setText] = React.useState("");
+  const [progress, setProgress] = React.useState(0);
+  const [layout,setLayout]=useState([]);
   const handleSelectFiled = (e) => {
     setPdfFile(e.target.files[0]);
     UrlUploader(e.target.files[0]);
@@ -24,6 +26,7 @@ const ConvertPDFTOWORD = () => {
         reader.onload = (e) => {
           const data = atob(e.target.result.replace(/.*base64,/, ""));
           renderPage(data);
+          
         };
         reader.readAsDataURL(blob);
       });
@@ -54,36 +57,58 @@ const ConvertPDFTOWORD = () => {
 
   const convertPDFTOTEXT = async (file) => {
     const texts = [];
+    const layout=[];
+    let processedImages = 0;
+    let imageLength=file.length;
     for (const images of file) {
       const { data } = await Tesseract.recognize(images, "eng+khm", {
+        // logger: (m) => {
+        //   console.log(m);
+        //   if(m.status ==="recognizing text"){
+        //     setProgress(parseInt(m.progress * 100))
+        //   }
+        // },
         logger: (m) => console.log(m),
       });
+      
+      processedImages++;
+      const progressPercentage = (processedImages / imageLength) * 100;
+      setProgress(progressPercentage);
       texts.push(data.text);
+      layout.push(data.words);
+      // const currentprogress ="";
     }
-
     texts.join("\n");
-
+    setLayout(layout);
     setText(texts);
   };
 
-  const downloadTextTOWord = () => {
-    const doc = new Document({
-      sections: [
-        {
-          children: [
-            new Paragraph({
-              text: text.toString(),
-              keepLines: true,
-              fontFamily: "Khmer OS Battambang",
-            }),
-          ],
-        },
-      ],
-    });
-    let name = pdfname.slice(0, -4);
-    Packer.toBlob(doc).then((data) => {
-      saveAs(data, `${name}.doc`);
-    });
+  // const downloadTextTOWord = () => {
+  //   const doc = new Document({
+  //     sections: [
+  //       {
+  //         children: [
+  //           new Paragraph({
+  //             text: text.toString(),
+  //             keepLines: true,
+  //             fontFamily: "Khmer OS Battambang",
+  //             style:{
+  //               display:'block'
+  //             }
+  //           }),
+  //         ],
+  //       },
+  //     ],
+  //   });
+  //   let name = pdfname.slice(0, -4);
+  //   Packer.toBlob(doc).then((data) => {
+  //     saveAs(data, `${name}.doc`);
+  //   });
+  // };
+  const createDocFile = () => {
+    const blob = new Blob(['\uFEFF' + text], { type: 'application/msword' });
+    const name = pdfname.slice(0,-4);
+    saveAs(blob, `${name}.doc`);
   };
 
   const sizeFile = (file) => {
@@ -117,10 +142,10 @@ const ConvertPDFTOWORD = () => {
           <img src="/image/1.png" alt="" />
         </div>
         {pdffile ? (
-          <div>
+          <div className="z-40">
             {text.length > 0 ? (
               <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
-                <img src="/image/pdf.png" alt="" className="w-[60px] mb-2" />
+                <img src="/image/doc.png" alt="" className="w-[85px] mb-2" />
                 <div className="flex flex-col items-center gap-y-3">
                   <div className="flex flex-col">
                     <h1 className="text-lg">{pdfname.slice(0, -4)}.doc</h1>
@@ -128,7 +153,7 @@ const ConvertPDFTOWORD = () => {
                   </div>
                   <button
                     className="w-[150px] h-[40px] flex justify-center items-center text-white text-base cursor-pointer font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
-                    onClick={downloadTextTOWord}
+                    onClick={createDocFile}
                   >
                     Download
                   </button>
@@ -138,9 +163,9 @@ const ConvertPDFTOWORD = () => {
               <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
                 <div className="flex items-center w-[70%] h-[80px] rounded-md justify-between p-5 bg-[#f4f9ff] shadow-md">
                   <img src="/image/pdf.png" alt="" className="w-[50px] mb-2" />
-                  <h1>{pdfname}.pdf</h1>
+                  <h1>{pdfname.slice(0, -4)}.pdf</h1>
                   <div className="flex items-center gap-x-8">
-                    <p>1 MB</p>
+                    <p>{sizeFile(pdffile)}</p>
                     <button
                       className="bg-[#1B1464] w-[50px] h-[40px] text-white text-lg font-extrabold rounded-md"
                       onClick={() => window.location.reload()}
@@ -153,9 +178,10 @@ const ConvertPDFTOWORD = () => {
                 <div className="flex flex-col items-center gap-y-3 mt-[20px]">
                   <p
                     htmlFor="contained-button-file"
-                    className="w-[250px] h-[40px] flex justify-center items-center text-white text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
+                    className="w-[280px] h-[40px] flex justify-center items-center text-white text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
                   >
-                    Converter is Process...
+                    Converter is Process...{" "}
+                    <span className="text-green-600 ml-3">{progress.toString().slice(0,3)} %</span>
                   </p>
                 </div>
               </div>

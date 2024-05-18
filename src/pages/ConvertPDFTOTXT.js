@@ -7,6 +7,7 @@ const ConvertPDFTOTXT = () => {
   const [pdffile, setPdfFile] = React.useState(null);
   const [pdfname, setPdfName] = React.useState("");
   const [text, setText] = React.useState("");
+  const [progress, setProgress] = React.useState(0);
   const handleSelectFiled = (e) => {
     setPdfFile(e.target.files[0]);
     UrlUploader(e.target.files[0]);
@@ -52,10 +53,21 @@ const ConvertPDFTOTXT = () => {
 
   const convertPDFTOTEXT = async (file) => {
     const texts = [];
+    let processedImages = 0;
+    let imageLength = file.length;
     for (const images of file) {
       const { data } = await Tesseract.recognize(images, "eng+khm", {
-        logger: (m) => console.log(m),
+        logger: (m) => {
+          console.log(m);
+          if(m.status ==="recognizing text"){
+            setProgress(parseInt(m.progress * 100))
+          }
+        },
+        // logger: (m) => console.log(m),
       });
+      processedImages++;
+      const progressPercentage = (processedImages / imageLength) * 100;
+      setProgress(progressPercentage);
       texts.push(data.text);
     }
 
@@ -103,13 +115,13 @@ const ConvertPDFTOTXT = () => {
           <img src="/image/1.png" alt="" />
         </div>
         {pdffile ? (
-          <div>
+          <div className="z-40">
             {text.length > 0 ? (
               <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
-                <img src="/image/pdf.png" alt="" className="w-[60px] mb-2" />
+                <img src="/image/txt1.png" alt="" className="w-[60px] mb-2" />
                 <div className="flex flex-col items-center gap-y-3">
                   <div className="flex flex-col">
-                    <h1 className="text-lg">{pdfname.slice(0,-4)}.doc</h1>
+                    <h1 className="text-lg">{pdfname.slice(0, -4)}.txt</h1>
                     <p className="text-sm">{sizeFile(pdffile)}</p>
                   </div>
                   <button
@@ -124,10 +136,13 @@ const ConvertPDFTOTXT = () => {
               <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
                 <div className="flex items-center w-[70%] h-[80px] rounded-md justify-between p-5 bg-[#f4f9ff] shadow-md">
                   <img src="/image/pdf.png" alt="" className="w-[50px] mb-2" />
-                  <h1>{pdfname}.pdf</h1>
+                  <h1>{pdfname.slice(0, -4)}.pdf</h1>
                   <div className="flex items-center gap-x-8">
-                    <p>1 MB</p>
-                    <button className="bg-[#1B1464] w-[50px] h-[40px] text-white text-lg font-extrabold rounded-md" onClick={()=>window.location.reload()}>
+                    <p>{sizeFile(pdffile)}</p>
+                    <button
+                      className="bg-[#1B1464] w-[50px] h-[40px] text-white text-lg font-extrabold rounded-md"
+                      onClick={() => window.location.reload()}
+                    >
                       X
                     </button>
                   </div>
@@ -136,9 +151,12 @@ const ConvertPDFTOTXT = () => {
                 <div className="flex flex-col items-center gap-y-3 mt-[20px]">
                   <p
                     htmlFor="contained-button-file"
-                    className="w-[250px] h-[40px] flex justify-center items-center text-white text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
+                    className="w-[280px] h-[40px] flex justify-center items-center text-white text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
                   >
-                    Converter is Process...
+                    Converter is Process...{" "}
+                    <span className="text-green-600 ml-3">
+                      {progress.toString().slice(0, 3)} %
+                    </span>
                   </p>
                 </div>
               </div>

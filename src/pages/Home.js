@@ -19,7 +19,7 @@ function Home() {
         </p>
       </div>
       <div className="flex items-center justify-center gap-x-40 mt-[40px]">
-        <Link to={'/converttodoc'}>
+        <Link to={"/converttodoc"}>
           <div className="w-[430px] h-[190px] shadow-md rounded-md flex p-4 border border-spacing-1 hover:cursor-pointer">
             <div className="w-[10%]">
               <img src="/image/upload.png" alt="logo" className="w-[50px]" />
@@ -34,7 +34,7 @@ function Home() {
             </div>
           </div>
         </Link>
-        <Link to={'/converttotxt'}>
+        <Link to={"/converttotxt"}>
           <div className="w-[430px] h-[190px] shadow-md rounded-md flex p-4 border border-spacing-1 hover:cursor-pointer">
             <div className="w-[10%]">
               <img src="/image/txt.png" alt="logo" className="w-[50px]" />
