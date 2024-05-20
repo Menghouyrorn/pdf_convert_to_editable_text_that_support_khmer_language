@@ -59,9 +59,9 @@ const ConvertPDFTOTXT = () => {
       const { data } = await Tesseract.recognize(images, "eng+khm", {
         logger: (m) => {
           console.log(m);
-          if(m.status ==="recognizing text"){
-            setProgress(parseInt(m.progress * 100))
-          }
+          // if(m.status ==="recognizing text"){
+          //   setProgress(parseInt(m.progress * 100))
+          // }
         },
         // logger: (m) => console.log(m),
       });
@@ -98,34 +98,40 @@ const ConvertPDFTOTXT = () => {
     return fileSize;
   };
   return (
-    <div className="p-[10px]">
+    <div className="p-[10px] h-screen top-0">
       <div>
-        <h1 className="font-bold text-[#1B1464] text-3xl m-auto text-center mt-[30px] w-[700px]">
+        <h1 className="font-bold text-[#1B1464] text-3xl m-auto text-center mt-[30px] w-full md:w-[700px]">
           Convert to Text
         </h1>
-        <div className="w-[50%] m-auto">
+        <div className="w-full md:w-[50%] m-auto">
           <p className="text-center text-lg mt-[10px]">
-            Text recognition without software installation or download. This OCR
+            Text recognition without software installation or download. This
             converter allows you to convert from pdf to the Text formats (.txt).
           </p>
         </div>
       </div>
       <div className="flex justify-center items-center w-full m-auto">
-        <div className="relative -right-[50px] z-10 -top-[60px]">
+        <div className="relative -right-[50px] z-10 -top-[60px] hidden md:flex">
           <img src="/image/1.png" alt="" />
         </div>
         {pdffile ? (
-          <div className="z-40">
+          <>
             {text.length > 0 ? (
-              <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
-                <img src="/image/txt1.png" alt="" className="w-[60px] mb-2" />
+              <div className="w-full md:w-[700px] bg-white shadow-md border border-spacing-1 h-[200px] md:h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
+                <img
+                  src="/image/txt1.png"
+                  alt=""
+                  className="w-[65px] md:w-[85px] mb-2"
+                />
                 <div className="flex flex-col items-center gap-y-3">
                   <div className="flex flex-col">
-                    <h1 className="text-lg">{pdfname.slice(0, -4)}.txt</h1>
-                    <p className="text-sm">{sizeFile(pdffile)}</p>
+                    <h1 className="text-sm md:text-lg">
+                      {pdfname.slice(0, -4)}.txt
+                    </h1>
+                    <p className="text-xs md:text-sm">{sizeFile(pdffile)}</p>
                   </div>
                   <button
-                    className="w-[150px] h-[40px] flex justify-center items-center text-white text-base cursor-pointer font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
+                    className="w-[150px] h-[40px] flex mb-4 md:mb-0 justify-center items-center text-white text-base cursor-pointer font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
                     onClick={downloadTextToFileTXT}
                   >
                     Download
@@ -133,14 +139,16 @@ const ConvertPDFTOTXT = () => {
                 </div>
               </div>
             ) : (
-              <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
-                <div className="flex items-center w-[70%] h-[80px] rounded-md justify-between p-5 bg-[#f4f9ff] shadow-md">
+              <div className="w-full md:w-[700px] bg-white shadow-md border border-spacing-1 h-[200px] md:h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
+                <div className="flex items-center w-full md:w-[70%] h-[80px] rounded-md justify-between p-5 bg-[#f4f9ff] shadow-md">
                   <img src="/image/pdf.png" alt="" className="w-[50px] mb-2" />
-                  <h1>{pdfname.slice(0, -4)}.pdf</h1>
-                  <div className="flex items-center gap-x-8">
-                    <p>{sizeFile(pdffile)}</p>
+                  <h1 className="text-xs md:text-base">
+                    {pdfname.slice(0, -4)}.pdf
+                  </h1>
+                  <div className="flex items-center gap-x-3 md:gap-x-8">
+                    <p className="text-xs md:text-base">{sizeFile(pdffile)}</p>
                     <button
-                      className="bg-[#1B1464] w-[50px] h-[40px] text-white text-lg font-extrabold rounded-md"
+                      className="bg-[#1B1464] w-[36px] md:w-[50px] h-[33px] md:h-[40px] text-white text-base md:text-lg font-extrabold rounded-md"
                       onClick={() => window.location.reload()}
                     >
                       X
@@ -151,7 +159,7 @@ const ConvertPDFTOTXT = () => {
                 <div className="flex flex-col items-center gap-y-3 mt-[20px]">
                   <p
                     htmlFor="contained-button-file"
-                    className="w-[280px] h-[40px] flex justify-center items-center text-white text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
+                    className="w-[200px] md:w-[280px] h-[40px] flex justify-center items-center text-white text-xs md:text-base font-bold rounded-md bg-[#1B1464] hover:shadow-md transition-all"
                   >
                     Converter is Process...{" "}
                     <span className="text-green-600 ml-3">
@@ -161,12 +169,12 @@ const ConvertPDFTOTXT = () => {
                 </div>
               </div>
             )}
-          </div>
+          </>
         ) : (
-          <div className="w-[700px] bg-white shadow-md border border-spacing-1 h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
+          <div className="w-full md:w-[700px] bg-white shadow-md border border-spacing-1 h-[200px] md:h-[300px] z-40 mt-[60px] rounded-xl flex flex-col justify-center items-center">
             <img src="/image/upload.png" alt="" className="w-[60px] mb-2" />
             <div className="flex flex-col items-center gap-y-3">
-              <h1 className="text-2xl text-black font-semibold">
+              <h1 className="text-base md:text-2xl text-black font-semibold">
                 Drag and Drop document here to upload
               </h1>
               <input
@@ -185,7 +193,7 @@ const ConvertPDFTOTXT = () => {
             </div>
           </div>
         )}
-        <div className="relative -left-[100px] z-20">
+        <div className="relative -left-[100px] z-20 hidden md:flex">
           <img src="/image/2.png" alt="" />
         </div>
       </div>

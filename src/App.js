@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import NextTopLoader from "nextjs-toploader";
 import ConvertPDFTOTXT from "./pages/ConvertPDFTOTXT";
 import ConvertPDFTOWORD from "./pages/ConvertPDFTOWORD";
+import ConvertImageToText from "./pages/ConvertImageToText";
 
 function App() {
   return (
@@ -20,11 +21,12 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/converttotxt" element={<ConvertPDFTOTXT/>}/>
-        <Route path="/converttodoc" element={<ConvertPDFTOWORD/>}/>
+        <Route path="/converttotxt" element={<ConvertPDFTOTXT />} />
+        <Route path="/converttodoc" element={<ConvertPDFTOWORD />} />
+        <Route path="/convertimagetotext" element={<ConvertImageToText/>}/>
         <Route path="*" element={<Page404 />} />
-        
       </Routes>
+      {/* <Footer /> */}
     </Router>
   );
 }
